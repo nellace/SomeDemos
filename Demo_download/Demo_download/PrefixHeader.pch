@@ -1,0 +1,18 @@
+//
+//  PrefixHeader.pch
+//  Demo_download
+//
+//  Created by WO on 15-4-13.
+//  Copyright (c) 2015年 sg. All rights reserved.
+//
+
+#ifndef Demo_download_PrefixHeader_pch
+#define Demo_download_PrefixHeader_pch
+#import "AFHTTPSessionManager.h"
+#import "AFHTTPRequestOperation.h"
+#import "UIProgressView+AFNetworking.h"
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif

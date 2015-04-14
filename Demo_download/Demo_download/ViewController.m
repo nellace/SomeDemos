@@ -12,6 +12,7 @@
 @interface ViewController ()
 {
     UIProgressView *pro;
+    UIButton *btn;
 }
 @end
 
@@ -20,10 +21,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     btn.frame = CGRectMake(240, 40, 60, 40);
     pro.backgroundColor = [UIColor blackColor];
-    [btn setTitle:@"开始下载" forState:UIControlStateNormal];
+    [btn setTitle:@"下载" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(downLoad) forControlEvents:UIControlEventTouchUpInside];
     pro = [[UIProgressView alloc]initWithFrame:CGRectMake(10, 60, 200, 20)];
     pro.backgroundColor = [UIColor blackColor];
@@ -34,6 +35,11 @@
 //AFHTTPSession下载功能
 - (void)downLoad
 {
+    if ([btn.titleLabel.text isEqualToString:@"下载"]) {
+        [btn setTitle:@"暂停" forState:UIControlStateNormal];
+    }else{
+        [btn setTitle:@"下载" forState:UIControlStateNormal];
+    }
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc]initWithSessionConfiguration:configuration];
     NSURL *url = [NSURL URLWithString:@"http://ghost.25pp.com/soft/pp_mac.dmg"];

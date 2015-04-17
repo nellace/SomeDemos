@@ -11,34 +11,39 @@
 
 @interface ViewController ()
 {
-    UIProgressView *pro;
-    UIButton *btn;
+    
 }
 @end
 
 @implementation ViewController
 
+@synthesize downloadBtn;
+@synthesize downloadingPro;
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn.frame = CGRectMake(240, 40, 60, 40);
-    pro.backgroundColor = [UIColor blackColor];
-    [btn setTitle:@"下载" forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(downLoad) forControlEvents:UIControlEventTouchUpInside];
-    pro = [[UIProgressView alloc]initWithFrame:CGRectMake(10, 60, 200, 20)];
-    pro.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:pro];
-    [self.view addSubview:btn];
+    downloadBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    downloadBtn.frame = CGRectMake(240, 40, 60, 40);
+    
+    [downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
+    [downloadBtn addTarget:self action:@selector(downLoad) forControlEvents:UIControlEventTouchUpInside];
+    
+    downloadingPro = [[UIProgressView alloc]initWithFrame:CGRectMake(10, 60, 200, 20)];
+    downloadingPro.backgroundColor = [UIColor blackColor];
+    [downloadingPro addObserver:self forKeyPath:@"progress" options:NSKeyValueObservingOptionNew context:nil];
+    [self.view addSubview:downloadingPro];
+    [self.view addSubview:downloadBtn];
 }
 
 //AFHTTPSession下载功能
 - (void)downLoad
 {
-    if ([btn.titleLabel.text isEqualToString:@"下载"]) {
-        [btn setTitle:@"暂停" forState:UIControlStateNormal];
+    if ([downloadBtn.titleLabel.text isEqualToString:@"下载"]) {
+        [downloadBtn setTitle:@"暂停" forState:UIControlStateNormal];
     }else{
-        [btn setTitle:@"下载" forState:UIControlStateNormal];
+        [downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
     }
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc]initWithSessionConfiguration:configuration];
@@ -46,13 +51,13 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSURL *documentsDirectectoryUrl = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-        NSLog(@"%f",pro.progress);
+        NSLog(@"%f",downloadingPro.progress);
         return [documentsDirectectoryUrl URLByAppendingPathComponent:[response suggestedFilename]];
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         NSLog(@"File downloaded to: %@",filePath);
         [[[UIAlertView alloc]initWithTitle:@"提示" message:@"下载完成" delegate:self cancelButtonTitle:@"queding" otherButtonTitles: nil]show];
     }];
-    [pro setProgressWithDownloadProgressOfTask:downloadTask animated:YES];
+    [downloadingPro setProgressWithDownloadProgressOfTask:downloadTask animated:YES];
     [downloadTask resume];
 }
 
@@ -62,4 +67,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"%@",keyPath);
+    NSNumber *number = [change objectForKey:@"new"];
+    CGFloat ff = [number floatValue];
+    NSLog(@"%.1f%%",ff*100);
+}
 @end

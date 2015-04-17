@@ -10,6 +10,8 @@
 
 @interface ViewController : UIViewController
 
+@property (nonatomic,strong) UIProgressView *downloadingPro;
+@property (nonatomic,strong) UIButton *downloadBtn;
 
 @end
 

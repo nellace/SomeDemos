@@ -12,6 +12,6 @@
 
 @property (nonatomic,strong) UIProgressView *downloadingPro;
 @property (nonatomic,strong) UIButton *downloadBtn;
-
+@property (nonatomic,assign) BOOL isDowmloading;
 @end
 

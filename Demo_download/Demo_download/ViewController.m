@@ -12,6 +12,7 @@
 @interface ViewController ()
 {
     NSURLSessionDownloadTask *downloadTask;
+    UILabel *label;
 }
 @end
 
@@ -20,21 +21,33 @@
 @synthesize downloadBtn;
 @synthesize downloadingPro;
 @synthesize isDowmloading;
-
+@synthesize percentLabel;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     downloadBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    downloadBtn.frame = CGRectMake(240, 40, 60, 40);
-    
+    downloadBtn.frame = CGRectMake(260, 40, 60, 40);
     [downloadBtn setTitle:@"下载" forState:UIControlStateNormal];
     [downloadBtn addTarget:self action:@selector(downLoadClick) forControlEvents:UIControlEventTouchUpInside];
     
     downloadingPro = [[UIProgressView alloc]initWithFrame:CGRectMake(10, 60, 200, 20)];
-    
     downloadingPro.backgroundColor = [UIColor blackColor];
     [self.downloadingPro addObserver:self forKeyPath:@"progress" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+    
+    percentLabel = [UILabel new];
+    percentLabel.frame = CGRectMake(210, 40, 40, 40);
+    
+    label =[[UILabel alloc]initWithFrame:CGRectMake(0, 100, 320, 300)];
+    label.backgroundColor = [UIColor grayColor];
+    label.numberOfLines = 0;
+    label.text = @"事实证明苹果已经充分掌握了互联网思维下的软件开发先放出来无数的牛逼功能让人期待，然后用个烂一点快速占领市场，最后慢慢的更新修复Bug……当然修Bug的程序员就安排几个，大部分人还在做更加牛逼的新功能……";
+    [label sizeToFit];
+    [self.view addSubview:label];
+    [self moveString:123456 movePath:3];
+    
+    NSLog(@"%f",label.frame.size.height);
+    [self.view addSubview:percentLabel];
     [self.view addSubview:downloadingPro];
     [self.view addSubview:downloadBtn];
     [self.downloadingPro removeObserver:self forKeyPath:@"progress"];
@@ -43,6 +56,7 @@
 
 - (void)downLoadClick
 {
+    
     if ([downloadBtn.titleLabel.text isEqualToString:@"下载"]) {
         
         [self beginDownload];
@@ -86,8 +100,8 @@
 
     
 //    记录下载比例方法KVO（二）
-    
     NSProgress *progress;
+//    downloadTask.resume
     downloadTask = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSURL *documentsDirectectoryUrl = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
 
@@ -115,14 +129,38 @@
     // Dispose of any resources that can be recreated.
 }
 
-
+//    记录下载比例方法KVO 观察者（二）
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"fractionCompleted"]) {
         NSProgress *progress = (NSProgress *)object;
-        NSLog(@"Progress… %f", progress.fractionCompleted);
+        int percent = progress.fractionCompleted*100;
+        NSLog(@"Progress… %d%@", percent,@"%");
+        NSString *percentLabelText = [NSString stringWithFormat:@"%d%@",percent,@"%"];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
+
+// 试一下循环右移
+
+- (void)moveString:(unsigned)str movePath:(int)path
+{
+    unsigned movePart = str & ~(~0 << path);
+    movePart = movePart << (wordlength() - path);
+    str = str >> path;
+    str = str | movePart;
+    NSLog(@"%u",str);
+    
+}
+
+int wordlength(void)
+{
+    int i;
+    unsigned v = (unsigned)~0;
+    
+    for (int i = 0; (i = v >>1) > 1; i--) ;
+    return i;
+}
+
 @end

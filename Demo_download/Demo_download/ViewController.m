@@ -41,10 +41,12 @@
     label =[[UILabel alloc]initWithFrame:CGRectMake(0, 100, 320, 300)];
     label.backgroundColor = [UIColor grayColor];
     label.numberOfLines = 0;
-    label.text = @"事实证明苹果已经充分掌握了互联网思维下的软件开发先放出来无数的牛逼功能让人期待，然后用个烂一点快速占领市场，最后慢慢的更新修复Bug……当然修Bug的程序员就安排几个，大部分人还在做更加牛逼的新功能……";
+    label.text = @"事实证明苹果已经充分掌握了互联网思维下的软件开发先放出来无数的"
+    "牛逼功能让人期待，然后用个烂一点快速占领市场，最后慢慢的更新\
+    修复Bug……当然修Bug的程序员就安排几个，大部分人还在做更加牛逼的新功能……";
     [label sizeToFit];
     [self.view addSubview:label];
-    [self moveString:123456 movePath:3];
+//    [self moveString:123456 movePath:3];
     
     NSLog(@"%f",label.frame.size.height);
     [self.view addSubview:percentLabel];
